@@ -1,0 +1,33 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script type="text/javascript">
+  $(function(){
+	  $("#pw").keyup(function(){
+		  var jsonData = {value: $("#pw").val()};
+		  $.ajax({
+			  url: "/passwdcheck",
+			  type: "POST",
+			  contentType: 'application/json',
+			  dataType: "json",
+			  data : JSON.stringify(jsonData)
+		  })
+		  .done( (data) => {
+			  $("#point").text(data.result);
+			  $("#message").text(data.message);
+		  })
+		  .always( (data) => {
+			  console.log(data);
+		  });
+	  });
+  });
+  </script>
+</head>
+<body>
+<input type="text" size="20" id="pw">
+<span id="point"></span>
+<div id="message"></div>
+</body>
+</html>
