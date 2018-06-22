@@ -9,6 +9,9 @@
 
 	  $("#pw").keyup(function(){
 		  if($("#pw").val().length == 0){
+			  $("#point").text("");
+			  $("#gauge").removeAttr("class");
+			  $("#message").text("");
 		  } else if(!isExec){
 			  isExec = true;
 			  var jsonData = {value: $("#pw").val()};
@@ -20,7 +23,9 @@
 				  data : JSON.stringify(jsonData)
 			  })
 			  .done( (data) => {
-				  $("#point").text(data.result);
+				  $("#point").text("評価：" + data.result + "点");
+				  $("#gauge").removeAttr("class");
+				  $("#gauge").addClass("p" + data.result);
 				  $("#message").text(data.message);
 			  })
 			  .always( (data) => {
@@ -42,11 +47,29 @@
 				  dataType: "json",
 				  data : JSON.stringify(jsonData)
 			  })
-			  .fail( (data) => {
+			  .always( (data) => {
+				  console.log(data);
 				  $("#message").text(data.message);
+				  isExec = false;
+			  });
+		  } else {
+			  console.log("running.")
+		  }
+	  });
+	  $("#del_btn").click(function(){
+		  if(!confirm("よく使われるパスワードを初期化します。本当によろしいですか？")){
+		  } else if(!isExec){
+			  var jsonData = {value: ""};
+			  $.ajax({
+				  url: "/passwddelall",
+				  type: "POST",
+				  contentType: 'application/json',
+				  dataType: "json",
+				  data : JSON.stringify(jsonData)
 			  })
 			  .always( (data) => {
 				  console.log(data);
+				  $("#message").text(data.message);
 				  isExec = false;
 			  });
 		  } else {
@@ -55,12 +78,61 @@
 	  });
   });
   </script>
+  <style type="text/css">
+  #pw {
+    width: 200px;
+  }
+  #gauge {
+    padding: 0px 0px 0px 0px;
+  }
+  #gauge #gauge_1,
+  #gauge #gauge_2,
+  #gauge #gauge_3,
+  #gauge #gauge_4,
+  #gauge #gauge_5,
+  #gauge #gauge_6 {
+    position: relative;
+    display: inline-block;
+    height: 20px;
+    width: 40px;
+    margin: 0px 0px 0px 0px;
+    padding: 0px 0px 0px 0px;
+  }
+  #gauge.p0 #gauge_1 {
+  	background-color: red;
+  }
+  #gauge.p1 #gauge_1, #gauge.p1 #gauge_2 {
+  	background-color: red;
+  }
+  #gauge.p2 #gauge_1, #gauge.p2 #gauge_2, #gauge.p2 #gauge_3 {
+  	background-color: orange;
+  }
+  #gauge.p3 #gauge_1, #gauge.p3 #gauge_2, #gauge.p3 #gauge_3, #gauge.p3 #gauge_4 {
+  	background-color: orange;
+  }
+  #gauge.p4 #gauge_1, #gauge.p4 #gauge_2, #gauge.p4 #gauge_3, #gauge.p4 #gauge_4, #gauge.p4 #gauge_5 {
+  	background-color: lightgreen;
+  }
+  #gauge.p5 #gauge_1, #gauge.p5 #gauge_2, #gauge.p5 #gauge_3, #gauge.p5 #gauge_4, #gauge.p5 #gauge_5, #gauge.p5 #gauge_6 {
+  	background-color: lightgreen;
+  }
+  </style>
 </head>
 <body>
 <input type="text" size="20" id="pw">
+
+<div id="gauge">
+<div id="gauge_1"></div>
+<div id="gauge_2"></div>
+<div id="gauge_3"></div>
+<div id="gauge_4"></div>
+<div id="gauge_5"></div>
+<div id="gauge_6"></div>
 <span id="point"></span>
+</div>
 <div>
 	<input type="button" id="reg_btn" value="登録">
+	<input type="button" id="del_btn" value="辞書初期化">
 </div>
 <div id="message"></div>
 </body>

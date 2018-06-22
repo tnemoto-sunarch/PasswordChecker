@@ -66,7 +66,11 @@ public class PasswordCheckerController {
 		}
 
 		res.setResponseCode(responseCode);
-		res.setResult(result);
+		if(result < 0) {
+			res.setResult(0);
+		} else {
+			res.setResult(result);
+		}
 		res.setExecTime(new Date());
 		res.setMessage(message);
 
@@ -94,6 +98,7 @@ public class PasswordCheckerController {
 				en.setCount(1);
 			}
 			passwdService.save(en);
+			message = "パスワードを登録しました";
 		} catch(Exception e) {
 			responseCode = 500;
 			message = e.getMessage();
@@ -108,4 +113,31 @@ public class PasswordCheckerController {
 		return ResponseEntity.ok(res);
 	}
 
+	/**
+	 * パスワード全削除API
+	 * @param req
+	 * @return
+	 */
+	@RequestMapping(value = "/passwddelall", method = RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<JsonResponse> passwddelall(@RequestBody JsonRequest req) {
+		JsonResponse res = new JsonResponse();
+		int responseCode = 200;
+		int result = 0;
+		String message = null;
+		try {
+			passwdService.deleteAll();
+			message = "登録されているパスワードを削除しました";
+		} catch(Exception e) {
+			responseCode = 500;
+			message = e.getMessage();
+			e.printStackTrace();
+		}
+
+		res.setResponseCode(responseCode);
+		res.setResult(result);
+		res.setExecTime(new Date());
+		res.setMessage(message);
+
+		return ResponseEntity.ok(res);
+	}
 }

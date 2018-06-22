@@ -63,12 +63,14 @@ public class AdditionalChecker {
 		DejizoServiceResponse dejires = dejizoService.service(value);
 
 		if(dejires.getItemCount() > 0) {
+			System.out.println("dictionaryWords: regist");
 			return -2;
 		} else {
 			value = convertL33T(value);
 			value = value.toLowerCase();
 			dejires = dejizoService.service(value);
 			if(dejires.getItemCount() > 0) {
+				System.out.println("dictionaryWords(l33t): regist");
 				return -1;
 			} else {
 				return 0;
@@ -116,6 +118,7 @@ public class AdditionalChecker {
 				}
 			}
 			if(count > 2) {
+				System.out.println("keybordWords:" + count);
 				return -1;
 			}
 			cc = ch;
@@ -142,6 +145,7 @@ public class AdditionalChecker {
 				}
 			}
 			if(count > 2) {
+				System.out.println("repeatWords:" + count);
 				return -1;
 			}
 			cc = ch;
@@ -170,6 +174,7 @@ public class AdditionalChecker {
 				}
 			}
 			if(count > 2) {
+				System.out.println("sequencialWords:" + count);
 				return -1;
 			}
 			cc = ch;

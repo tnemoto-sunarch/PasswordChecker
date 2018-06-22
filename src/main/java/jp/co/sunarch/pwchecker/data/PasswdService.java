@@ -18,4 +18,8 @@ public class PasswdService {
 	public void save(TCommonPassEntity entity) {
 		repository.save(entity);
 	}
+
+	public void deleteAll() {
+		repository.deleteAll();;
+	}
 }
