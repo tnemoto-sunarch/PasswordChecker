@@ -1,18 +1,25 @@
 package jp.co.sunarch.pwchecker.data;
 
-import javax.validation.constraints.NotEmpty;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
-import jp.co.future.uroborosql.mapping.annotations.Table;
-
-@Table(name = "t_common_pass")
+@Entity
+@Table(name="t_common_pass")
 public class TCommonPassEntity {
 
-	@NotEmpty
+	@Id
+	@GeneratedValue
+	private int id;
+
+	@Column(nullable = false)
 	@Size(max = 64)
 	private String password;
 
-	@NotEmpty
+	@Column(nullable = false)
 	private int count;
 
 	public String getPassword() {
@@ -29,5 +36,13 @@ public class TCommonPassEntity {
 
 	public void setCount(int count) {
 		this.count = count;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 }

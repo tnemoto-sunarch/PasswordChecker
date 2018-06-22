@@ -5,22 +5,53 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script type="text/javascript">
   $(function(){
+	  var isExec = false;
+
 	  $("#pw").keyup(function(){
-		  var jsonData = {value: $("#pw").val()};
-		  $.ajax({
-			  url: "/passwdcheck",
-			  type: "POST",
-			  contentType: 'application/json',
-			  dataType: "json",
-			  data : JSON.stringify(jsonData)
-		  })
-		  .done( (data) => {
-			  $("#point").text(data.result);
-			  $("#message").text(data.message);
-		  })
-		  .always( (data) => {
-			  console.log(data);
-		  });
+		  if($("#pw").val().length == 0){
+		  } else if(!isExec){
+			  isExec = true;
+			  var jsonData = {value: $("#pw").val()};
+			  $.ajax({
+				  url: "/passwdcheck",
+				  type: "POST",
+				  contentType: 'application/json',
+				  dataType: "json",
+				  data : JSON.stringify(jsonData)
+			  })
+			  .done( (data) => {
+				  $("#point").text(data.result);
+				  $("#message").text(data.message);
+			  })
+			  .always( (data) => {
+				  console.log(data);
+				  isExec = false;
+			  });
+		  } else {
+			  console.log("running.")
+		  }
+	  });
+	  $("#reg_btn").click(function(){
+		  if($("#pw").val().length == 0){
+		  } else if(!isExec){
+			  var jsonData = {value: $("#pw").val()};
+			  $.ajax({
+				  url: "/passwdreg",
+				  type: "POST",
+				  contentType: 'application/json',
+				  dataType: "json",
+				  data : JSON.stringify(jsonData)
+			  })
+			  .fail( (data) => {
+				  $("#message").text(data.message);
+			  })
+			  .always( (data) => {
+				  console.log(data);
+				  isExec = false;
+			  });
+		  } else {
+			  console.log("running.")
+		  }
 	  });
   });
   </script>
@@ -28,6 +59,9 @@
 <body>
 <input type="text" size="20" id="pw">
 <span id="point"></span>
+<div>
+	<input type="button" id="reg_btn" value="登録">
+</div>
 <div id="message"></div>
 </body>
 </html>

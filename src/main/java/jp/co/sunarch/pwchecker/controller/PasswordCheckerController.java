@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import jp.co.sunarch.pwchecker.annotation.ResultPoint;
+import jp.co.sunarch.pwchecker.data.PasswdService;
+import jp.co.sunarch.pwchecker.data.TCommonPassEntity;
 import jp.co.sunarch.pwchecker.dto.JsonRequest;
 import jp.co.sunarch.pwchecker.dto.JsonResponse;
 
@@ -26,6 +28,9 @@ public class PasswordCheckerController {
 
 	@Autowired
 	private AutowireCapableBeanFactory factory;
+
+	@Autowired
+	private PasswdService passwdService;
 
 	/**
 	 * パスワードチェックAPI
@@ -68,5 +73,39 @@ public class PasswordCheckerController {
 		return ResponseEntity.ok(res);
 	}
 
+	/**
+	 * パスワード登録API
+	 * @param req
+	 * @return
+	 */
+	@RequestMapping(value = "/passwdreg", method = RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<JsonResponse> passwdreg(@RequestBody JsonRequest req) {
+		JsonResponse res = new JsonResponse();
+		int responseCode = 200;
+		int result = 0;
+		String message = null;
+		try {
+			TCommonPassEntity en = passwdService.find(req.getValue());
+			if(en != null) {
+				en.setCount(en.getCount() + 1);
+			} else {
+				en = new TCommonPassEntity();
+				en.setPassword(req.getValue());
+				en.setCount(1);
+			}
+			passwdService.save(en);
+		} catch(Exception e) {
+			responseCode = 500;
+			message = e.getMessage();
+			e.printStackTrace();
+		}
+
+		res.setResponseCode(responseCode);
+		res.setResult(result);
+		res.setExecTime(new Date());
+		res.setMessage(message);
+
+		return ResponseEntity.ok(res);
+	}
 
 }

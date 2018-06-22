@@ -1,16 +1,9 @@
 package jp.co.sunarch.pwchecker.checker;
 
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
-import jp.co.future.uroborosql.SqlAgent;
-import jp.co.future.uroborosql.UroboroSQL;
-import jp.co.future.uroborosql.config.SqlConfig;
 import jp.co.sunarch.pwchecker.annotation.ResultPoint;
+import jp.co.sunarch.pwchecker.data.PasswdService;
 import jp.co.sunarch.pwchecker.data.TCommonPassEntity;
 import jp.co.sunarch.pwchecker.service.DejizoService;
 import jp.co.sunarch.pwchecker.service.DejizoServiceResponse;
@@ -21,7 +14,7 @@ public class AdditionalChecker {
 	private DejizoService dejizoService;
 
 	@Autowired
-	private DataSource dataSource;
+	private PasswdService passwdService;
 
 	private static char[][] KEYBOARD = new char[][] {
 	/*0*/	{'1','2','3','4','5','6','7','8','9','0','-','^','\\'},
@@ -51,17 +44,13 @@ public class AdditionalChecker {
 	 */
 	@ResultPoint
 	public int commonWords(String value) {
-		SqlConfig config = UroboroSQL.builder(dataSource).build();
-		try (SqlAgent agent = config.agent()){
-			Optional<TCommonPassEntity> entity = agent.query("pass_select").param("value", value).findFirst(TCommonPassEntity.class);
-			TCommonPassEntity e = entity.get();
-			if(e != null) {
-				return -3;
-			}
-		} catch(NoSuchElementException e) {
-			//見つからない場合・・・？
+		TCommonPassEntity en = passwdService.find(value);
+		if(en != null) {
+			System.out.println(en.getId() + ":" + en.getPassword() + ":" + en.getCount());
+			return -2;
+		} else {
+			return 0;
 		}
-		return 0;
 	}
 
 	/**
