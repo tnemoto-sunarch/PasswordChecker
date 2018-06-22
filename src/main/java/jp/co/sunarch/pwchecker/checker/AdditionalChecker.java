@@ -60,7 +60,7 @@ public class AdditionalChecker {
 	 */
 	@ResultPoint
 	public int dictionaryWords(String value) {
-		DejizoServiceResponse dejires = dejizoService.service(value);
+		DejizoServiceResponse dejires = dejizoService.service(value.toLowerCase());
 
 		if(dejires.getItemCount() > 0) {
 			System.out.println("dictionaryWords: regist");
